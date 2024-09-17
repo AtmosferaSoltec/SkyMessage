@@ -1,3 +1,3 @@
 export const constants = {
-  jwtSecret: 'EnvioMasivoSecretKey34@',
+  jwtSecret: 'EnvioMasivoSecretKey34@'
 };

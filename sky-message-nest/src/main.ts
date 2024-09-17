@@ -4,6 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { httpsCertificate } from './config/https-certificate';
 
 async function bootstrap() {
+  // Es una Prueba ELIMINAR
   const app = await NestFactory.create(AppModule, {
     httpsOptions: httpsCertificate(),
   });
