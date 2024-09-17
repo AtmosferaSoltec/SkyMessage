@@ -1,0 +1,5 @@
+<div class="flex flex-col gap-4">
+  @for (item of listEnvios(); track $index) {
+  <app-card-historial [envio]="item" />
+  }
+</div>

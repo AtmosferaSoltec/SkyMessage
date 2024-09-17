@@ -1,0 +1,159 @@
+@if (isVisible()) {
+<div
+  class="fixed top-0 bottom-0 left-0 right-0 z-50 bg-colorBlack bg-opacity-60"
+>
+  <div class="flex items-center justify-center w-full h-full">
+    <div
+      class="w-screen m-4 bg-white sm:m-0 sm:w-[500px] md:w-[600px] rounded-xl"
+    >
+      <app-product-form-dialog (onClose)="isVisible.set(false)" />
+    </div>
+  </div>
+</div>
+}
+<div class="flex flex-col items-end w-full h-full gap-4 m-4">
+  <div
+    class="flex items-center px-4 w-full h-[64px] bg-white shadow-xl rounded-xl justify-between"
+  >
+    <span class="flex gap-2 text-[18px] items-center">
+      <select
+        class="font-bold"
+        [(ngModel)]="plantilla"
+        (change)="setPlantilla()"
+      >
+        @if (!plantilla) {
+        <option [ngValue]="null">Seleccionar</option>
+        } @for (item of listPlantillas(); track $index) {
+        <option [ngValue]="item">{{ item.titulo }}</option>
+        }
+      </select>
+
+      @if (plantilla) {
+      <div class="flex rounded-md shadow-sm">
+        <a
+          class="flex items-center justify-center w-8 h-8 cursor-pointer rounded-l-md bg-colorBlack text-colorGrey"
+          matTooltip="Editar"
+        >
+          <mat-icon>edit</mat-icon>
+        </a>
+        <a
+          (click)="removePlantilla()"
+          class="flex items-center justify-center w-8 h-8 cursor-pointer rounded-r-md bg-colorGrey text-colorBlack"
+          matTooltip="Limpiar"
+        >
+          <mat-icon>close</mat-icon>
+        </a>
+      </div>
+      }
+    </span>
+
+    <div class="flex-auto"></div>
+    <app-button
+      theme="secondary"
+      icon="add"
+      text="Plantilla"
+      (click)="isVisible.set(true)"
+    />
+  </div>
+  <div
+    class="flex flex-col items-start w-full gap-4 p-4 bg-white shadow-xl rounded-xl"
+  >
+    <span class="text-[18px] font-black"> Mensaje </span>
+    <textarea
+      class="w-full h-[240px] p-4 rounded-2xl bg-gray-200 text-left align-top focus:outline-none focus:ring-0 resize-none"
+      [value]="mensaje"
+    ></textarea>
+
+    <div class="flex items-center justify-between w-full">
+      <div>
+        @if (!imagen()) {
+
+        <input
+          type="file"
+          #imgInput
+          style="display: none"
+          (change)="onImgSelected($event)"
+          accept=".png, .jpg, .jpeg"
+        />
+        <button
+          (click)="imgInput.click()"
+          mat-icon-button
+          matTooltip="Agregar Imagen"
+        >
+          <mat-icon>add_photo_alternate</mat-icon>
+        </button>
+
+        } @else {
+        <!-- Poner la imagen y mostrarla -->
+        <img
+          [src]="getImg(imagen()!)"
+          class="w-[100px] h-[100px] object-cover rounded-lg"
+        />
+        }
+      </div>
+
+      <app-button icon="send" text="Enviar" />
+    </div>
+  </div>
+  <div
+    class="flex items-center px-4 w-full h-[64px] bg-white shadow-xl rounded-xl justify-between"
+  >
+    <span class="text-[18px] font-black"> Detalle de registros </span>
+
+    <div class="flex items-center gap-2">
+      <input
+        type="file"
+        #fileInput
+        style="display: none"
+        (change)="onFileSelected($event)"
+        accept=".xlsx, .xls"
+      />
+
+      @if (archivo()) {
+      <button
+        class="h-[42px] rounded-lg px-4 flex items-center gap-2 bg-colorGrey hover:bg-colorBlack hover:text-white active:bg-black"
+        (click)="removeFile()"
+      >
+        <mat-icon>delete</mat-icon>
+        <span>{{ archivo()?.name }}</span>
+      </button>
+      } @else {
+
+      <app-button icon="person_add" text="Agregar" />
+
+      <app-button
+        theme="secondary"
+        icon="upload_file"
+        text="Subir Excel"
+        (click)="fileInput.click()"
+      />
+
+      }
+    </div>
+  </div>
+
+  <table class="w-full bg-white shadow-xl rounded-xl">
+    <thead>
+      <tr>
+        <th class="p-4 text-start">Nombre</th>
+        <th class="p-4 text-start">Celular</th>
+        <th class="p-4 text-start">Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (item of listUsuarios(); track $index) {
+      <tr class="bg-colorGrey even:bg-white">
+        <td class="px-4 py-2">{{ item.nombre }}</td>
+        <td class="px-4 py-2">{{ item.celular }}</td>
+        <td class="px-4 py-2">Pendiente</td>
+      </tr>
+      } @empty {
+      <tr>
+        <td class="px-4 py-2 text-center rounded-b-xl bg-colorGrey" colspan="3">
+          No hay registros
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+</div>

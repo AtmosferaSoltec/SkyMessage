@@ -1,0 +1,56 @@
+<div class="flex flex-col p-2 bg-white">
+  <div class="flex gap-4">
+    <div class="flex flex-col flex-1">
+      <span class="text-xs">Número de envio</span>
+      <p class="font-bold">#{{ envio.correlativo }}</p>
+    </div>
+
+    <div class="flex flex-col flex-1">
+      <span class="text-xs">Destinatarios</span>
+      <p class="font-bold">{{ envio.destinatarios.length }}</p>
+    </div>
+
+    <div class="flex flex-col flex-1">
+      <span class="text-xs">Fecha</span>
+      <p class="font-bold">{{ envio.created_at | date : "dd/MM/yy" }}</p>
+    </div>
+
+    <div class="flex flex-col flex-1">
+      <span class="text-xs">Hora</span>
+      <p class="font-bold">{{ envio.created_at | date : "hh:mm a" }}</p>
+    </div>
+
+    <button mat-icon-button (click)="isVisible.set(!isVisible())">
+      <mat-icon>
+        @if (isVisible()) { keyboard_arrow_up } @else { keyboard_arrow_down }
+      </mat-icon>
+    </button>
+  </div>
+
+  @if (isVisible()) {
+  <table class="w-full">
+    <thead>
+      <tr>
+        <th class="p-4 text-start">Nombre</th>
+        <th class="p-4 text-start">Celular</th>
+        <th class="p-4 text-start">Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (item of envio.destinatarios; track $index) {
+      <tr class="bg-colorGrey even:bg-white">
+        <td class="px-4 py-2">{{ item.nombre }}</td>
+        <td class="px-4 py-2">{{ item.telf }}</td>
+        <td class="px-4 py-2">{{ item.estado }}</td>
+      </tr>
+      } @empty {
+      <tr>
+        <td class="px-4 py-2 text-center rounded-b-xl bg-colorGrey" colspan="3">
+          No hay registros
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+  }
+</div>
