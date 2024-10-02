@@ -1,3 +1,3 @@
 export const environment = {
-  baseUrl: 'http://localhost:3001',
+  baseUrl: 'https://sv-YaAUgKfBpu.cloud.elastika.pe:4343',
 };

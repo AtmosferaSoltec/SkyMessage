@@ -8,8 +8,7 @@ import { CardHistorialComponent } from '../../components/card-historial/card-his
   selector: 'app-historial',
   standalone: true,
   imports: [CommonModule, CardHistorialComponent],
-  templateUrl: './historial.component.html',
-  styleUrl: './historial.component.scss',
+  templateUrl: './historial.component.html'
 })
 export class HistorialComponent implements OnInit {
   envioService = inject(EnvioService);

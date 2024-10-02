@@ -6,7 +6,6 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
   selector: 'app-menu',
   standalone: true,
   imports: [NavbarComponent, RouterModule],
-  templateUrl: './menu.component.html',
-  styleUrl: './menu.component.scss',
+  templateUrl: './menu.component.html'
 })
 export class MenuComponent {}

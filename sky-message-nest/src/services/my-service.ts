@@ -18,7 +18,7 @@ export class MyService {
     try {
         let envios = await this.envioService.findAll();
         envios.forEach(async (envio) => {
-            const res = await lastValueFrom(this.http.post('http://localhost:3000/envio', envio));
+            //const res = await lastValueFrom(this.http.post('http://localhost:3000/envio', envio));
         });
     } catch (error) {
         console.log(error);

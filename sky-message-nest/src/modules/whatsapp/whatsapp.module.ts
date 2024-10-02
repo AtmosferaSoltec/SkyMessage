@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { WhatsappService } from './whatsapp.service';
 import { WhatsappController } from './whatsapp.controller';
 import { HttpModule } from '@nestjs/axios';
-import { UsuarioModule } from '../usuario/usuario.module';
+import { UsuarioModule } from '../admin/usuario/usuario.module';
 
 @Module({
   imports: [HttpModule, UsuarioModule],

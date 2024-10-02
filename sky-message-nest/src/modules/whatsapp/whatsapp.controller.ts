@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { WhatsappService } from './whatsapp.service';
-import { AuthGuard } from 'src/guards/auth/auth.guard';
+import { AuthGuard } from 'src/guards/auth.guard';
 
 @Controller('whatsapp')
 export class WhatsappController {
@@ -26,4 +26,12 @@ export class WhatsappController {
     const { id } = request['user'];
     return this.whatsappService.logout(id);
   }
+
+  @UseGuards(AuthGuard)
+  @Get('perfil')
+  perfil(@Req() request: Request) {
+    const { id } = request['user'];
+    return this.whatsappService.getPerfil(id)
+  }
+
 }

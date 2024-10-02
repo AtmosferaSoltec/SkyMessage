@@ -1,6 +1,11 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { UsuarioService } from '../usuario/usuario.service';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
+import { UsuarioService } from '../admin/usuario/usuario.service';
+import { lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class WhatsappService {
@@ -11,11 +16,11 @@ export class WhatsappService {
 
   async getQR(idUsuario: number) {
     const { instance, token } = await this.usuarioService.findOne(idUsuario);
-    const response = await this.http
-      .get(
+    const response = await lastValueFrom(
+      this.http.get(
         `https://api.ultramsg.com/${instance}/instance/qrCode?token=${token}`,
-      )
-      .toPromise();
+      ),
+    );
     const data = response.data?.qrCode;
     if (data) {
       return { qrCode: data };
@@ -26,13 +31,12 @@ export class WhatsappService {
 
   async getEstado(idUsuario: number) {
     const { instance, token } = await this.usuarioService.findOne(idUsuario);
-    const response = await this.http
-      .get(
+    const res = await lastValueFrom(
+      this.http.get(
         `https://api.ultramsg.com/${instance}/instance/status?token=${token}`,
-      )
-      .toPromise();
-    const data = response.data?.status?.accountStatus?.status;
-    return { estado: data == 'authenticated' };
+      ),
+    );
+    return res;
   }
 
   async logout(idUsuario: number) {
@@ -59,6 +63,32 @@ export class WhatsappService {
       return 'Logout exitoso';
     } else {
       return 'Logout fallido';
+    }
+  }
+
+  async getPerfil(idUsuario: number) {
+    try {
+      const { instance, token } = await this.usuarioService.findOne(idUsuario);
+      const response = await lastValueFrom(
+        this.http.get(
+          `https://api.ultramsg.com/${instance}/instance/me?token=${token}`,
+        ),
+      );
+      const data = response?.data
+      if (!data) {
+        throw new NotFoundException('Perfil no encontrado');
+      }
+
+      console.log(data);
+      
+      return {
+        phone: data?.id,
+        nombre: data?.name,
+        imagen: data?.profile_picture,
+        is_business: data?.is_business
+      };
+    } catch (error) {
+      throw new InternalServerErrorException('Error al obtener el perfil');
     }
   }
 }

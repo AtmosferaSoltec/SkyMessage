@@ -3,13 +3,14 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './modules/auth/auth.module';
 import { AppGateway } from './app.gateway';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PlantillaModule } from './modules/plantilla/plantilla.module';
-import { UsuarioModule } from './modules/usuario/usuario.module';
+import { PlantillaModule } from './modules/admin/plantilla/plantilla.module';
+import { UsuarioModule } from './modules/admin/usuario/usuario.module';
 import { EnvioModule } from './modules/envio/envio.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { MyService } from './services/my-service';
 import { HttpModule } from '@nestjs/axios';
 import { WhatsappModule } from './modules/whatsapp/whatsapp.module';
+import { TipoUsuarioModule } from './modules/admin/tipo-usuario/tipo-usuario.module';
 
 @Module({
   imports: [
@@ -26,11 +27,12 @@ import { WhatsappModule } from './modules/whatsapp/whatsapp.module';
       autoLoadEntities: true,
       synchronize: true,
     }),
-    AuthModule,
-    PlantillaModule,
     UsuarioModule,
+    PlantillaModule,
     EnvioModule,
     WhatsappModule,
+    TipoUsuarioModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [AppGateway, MyService],

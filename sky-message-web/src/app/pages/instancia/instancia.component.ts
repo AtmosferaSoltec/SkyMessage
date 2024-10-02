@@ -11,7 +11,6 @@ import * as QRCode from 'qrcode';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './instancia.component.html',
-  styleUrl: './instancia.component.scss',
   animations: [
     trigger('fadeInOut', fadeInOut()),
     trigger('prueba', animPrueba()),
