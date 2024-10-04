@@ -17,6 +17,6 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'menu/historial',
+    redirectTo: 'login',
   },
 ];
