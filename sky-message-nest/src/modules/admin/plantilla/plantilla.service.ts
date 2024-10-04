@@ -9,15 +9,19 @@ import { UpdatePlantillaDto } from './dto/update-plantilla.dto';
 import { Not, Repository } from 'typeorm';
 import { Plantilla } from './entities/plantilla.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UsuarioService } from '../usuario/usuario.service';
 
 @Injectable()
 export class PlantillaService {
   constructor(
     @InjectRepository(Plantilla)
     private readonly repo: Repository<Plantilla>,
+
+    private readonly repoUsuario: UsuarioService,
   ) {}
 
-  async create(dto: CreatePlantillaDto) {
+  async create(dto: CreatePlantillaDto, idUser: number) {
+    const usuario = await this.repoUsuario.findOne(idUser);
     const find = await this.repo.findOne({ where: { titulo: dto.titulo } });
     if (find) {
       throw new ConflictException(
@@ -25,7 +29,7 @@ export class PlantillaService {
       );
     }
     try {
-      const plantilla = this.repo.create(dto);
+      const plantilla = this.repo.create({ ...dto, usuario });
       await this.repo.save(plantilla);
       return await this.findOne(plantilla.id);
     } catch (error) {
@@ -37,6 +41,10 @@ export class PlantillaService {
     return await this.repo.find();
   }
 
+  async findList(id: number) {
+    return await this.repo.find({ where: { usuario: { id } } });
+  }
+
   async findOne(id: number) {
     const plantilla = await this.repo.findOne({ where: { id } });
     if (!plantilla) {
@@ -45,11 +53,11 @@ export class PlantillaService {
     return plantilla;
   }
 
-  async update(id: number, dto: UpdatePlantillaDto) {
+  async update(id: number, dto: UpdatePlantillaDto, idUsuario: number) {
     await this.findOne(id);
 
     const find = await this.repo.findOne({
-      where: { titulo: dto.titulo, id: Not(id) },
+      where: { titulo: dto.titulo, id: Not(id), usuario: { id: idUsuario } },
     });
     if (find) {
       throw new ConflictException(
@@ -57,12 +65,13 @@ export class PlantillaService {
       );
     }
     try {
-      
-    const updated = await this.repo.preload({ id, ...dto });
-    await this.repo.save(updated);
-    return await this.findOne(id);
+      const updated = await this.repo.preload({ id, ...dto });
+      await this.repo.save(updated);
+      return await this.findOne(id);
     } catch (error) {
-      throw new InternalServerErrorException(`Error al actualizar la plantilla`);
+      throw new InternalServerErrorException(
+        `Error al actualizar la plantilla`,
+      );
     }
   }
 

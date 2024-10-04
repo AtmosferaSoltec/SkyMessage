@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -42,4 +42,10 @@ export class NavbarComponent {
         'Configura el mensaje a enviar y el tiempo de espera entre mensajes',
     },
   ];
+
+  router = inject(Router)
+
+  logout() {
+    this.router.navigate(['login']);
+  }
 }

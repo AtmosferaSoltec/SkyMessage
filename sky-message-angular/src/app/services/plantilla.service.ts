@@ -22,4 +22,8 @@ export class PlantillaService {
   create(data: any) {
     return this.http.post(this.baseUrl, data);
   }
+
+  update(id: number, data: any) {
+    return this.http.patch(`${this.baseUrl}/${id}`, data);
+  }
 }

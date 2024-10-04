@@ -1,6 +1,7 @@
 import { Envio } from 'src/modules/envio/entities/envio.entity';
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { TipoUsuario } from '../../tipo-usuario/entities/tipo-usuario.entity';
+import { Plantilla } from '../../plantilla/entities/plantilla.entity';
 
 @Entity({ name: 'usuario' })
 export class Usuario {
@@ -52,5 +53,11 @@ export class Usuario {
     (tp) => tp.usuarios
   )
   tipoUsuario: TipoUsuario;
+
+  @OneToMany(
+    () => Plantilla,
+    (p) => p.usuario,
+  )
+  plantillas: Plantilla[];
   
 }

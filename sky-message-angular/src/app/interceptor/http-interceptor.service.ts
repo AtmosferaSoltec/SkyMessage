@@ -10,8 +10,11 @@ export function httpInterceptor(
   req: HttpRequest<unknown>,
   next: HttpHandlerFn
 ): Observable<HttpEvent<unknown>> {
+  
+  const token = localStorage.getItem('token');
+
   const headers = new HttpHeaders({
-    token: '123456',
+    Authorization: `Bearer ${token}`,
   });
 
   const reqClon = req.clone({
@@ -21,7 +24,8 @@ export function httpInterceptor(
   return next(reqClon).pipe(
     catchError((err) => {
       const data = err?.error;
-
+      console.log(data);
+      
       return throwError(data?.message || 'Error desconocido');
     })
   );

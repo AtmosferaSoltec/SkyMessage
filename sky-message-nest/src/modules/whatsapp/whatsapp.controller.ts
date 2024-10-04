@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Post, Req, UseGuards } from '@nestjs/common';
 import { WhatsappService } from './whatsapp.service';
 import { AuthGuard } from 'src/guards/auth.guard';
 
@@ -22,6 +22,7 @@ export class WhatsappController {
 
   @UseGuards(AuthGuard)
   @Post('logout')
+  @HttpCode(200)
   logout(@Req() request: Request) {
     const { id } = request['user'];
     return this.whatsappService.logout(id);

@@ -1,60 +1,41 @@
-import { Component } from '@angular/core';
-import * as QRCode from 'qrcode';
-import { trigger } from '@angular/animations';
-import { animPrueba } from '../../animations/anim-prueba';
-import { fadeInOut } from '../../animations/fade-in-out';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ButtonComponent } from '../../components/button/button.component';
-import { MatIconModule } from '@angular/material/icon';
-import { SecondsPipe } from '../../pipes/seconds.pipe';
+import { GenerarQRComponent } from './components/generar-qr/generar-qr.component';
+import { InstanciaConectadaComponent } from './components/instancia-conectada/instancia-conectada.component';
+import { InstanciaService } from '../../services/instancia.service';
+import { InstanciaPageService } from './instancia-page.service';
 
 @Component({
   selector: 'app-instancia',
   standalone: true,
-  imports: [CommonModule, ButtonComponent, MatIconModule, SecondsPipe],
+  imports: [CommonModule, GenerarQRComponent, InstanciaConectadaComponent],
   templateUrl: './instancia.component.html',
-  animations: [
-    trigger('fadeInOut', fadeInOut()),
-    trigger('prueba', animPrueba()),
-  ],
 })
-export class InstanciaComponent {
-  isLoading = false;
-  imageQR?: string;
+export class InstanciaComponent implements OnInit {
+  
+  instanciaService = inject(InstanciaService);
+  isLoading = signal(false);
 
-  private delay(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+  service = inject(InstanciaPageService)
+
+  ngOnInit(): void {
+    this.getEstado();
   }
 
-  async generarQR() {
-    try {
-      this.isLoading = true;
-      await this.delay(2000);
-      QRCode.toDataURL(
-        'Debes Generar el Código QR para poder obtener una instancia activa.'
-      ).then((url) => {
-        this.imageQR = url;
-        this.startTimer();
-      });
-    } catch (error) {
-      console.log(error);
-    } finally {
-      this.isLoading = false;
-    }
-  }
-
-  timer: number = 0;
-  interval: any;
-
-  startTimer() {
-    this.timer = 40;
-    this.interval = setInterval(() => {
-      if (this.timer > 0) {
-        this.timer--;
-      } else {
-        this.imageQR = undefined;
-        clearInterval(this.interval);
-      }
-    }, 1000);
+  getEstado() {
+    this.isLoading.set(true);
+    this.instanciaService.getEstado().subscribe({
+      next: (data: any) => {
+        if (data?.status?.accountStatus?.status === 'authenticated') {
+          this.service.isConnected.set(true);
+        }
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        this.isLoading.set(false);
+      },
+    });
   }
 }

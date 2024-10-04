@@ -30,13 +30,21 @@ export class WhatsappService {
   }
 
   async getEstado(idUsuario: number) {
-    const { instance, token } = await this.usuarioService.findOne(idUsuario);
-    const res = await lastValueFrom(
-      this.http.get(
-        `https://api.ultramsg.com/${instance}/instance/status?token=${token}`,
-      ),
-    );
-    return res;
+    try {
+      const { instance, token } = await this.usuarioService.findOne(idUsuario);
+      const url = `https://api.ultramsg.com/${instance}/instance/status?token=${token}`;
+
+      const call = await lastValueFrom(this.http.get(url));
+
+      if (call?.data) {
+        return call?.data;
+      } else {
+        throw new NotFoundException('Estado no encontrado');
+      }
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException('Error al obtener el estado');
+    }
   }
 
   async logout(idUsuario: number) {
@@ -51,18 +59,14 @@ export class WhatsappService {
       },
     };
 
-    const res = await this.http
-      .post(
-        `https://api.ultramsg.com/${instance}/instance/logout`,
-        data,
-        headers,
-      )
-      .toPromise();
+    const url = `https://api.ultramsg.com/${instance}/instance/logout`;
 
-    if (res.data?.message?.success == 'done') {
-      return 'Logout exitoso';
+    const res: any = await lastValueFrom(this.http.post(url, data, headers));
+
+    if (res.data?.success == 'done') {
+      return { message: 'Sesión cerrada' };
     } else {
-      return 'Logout fallido';
+      throw new InternalServerErrorException('Error al cerrar sesión');
     }
   }
 
@@ -74,18 +78,18 @@ export class WhatsappService {
           `https://api.ultramsg.com/${instance}/instance/me?token=${token}`,
         ),
       );
-      const data = response?.data
+      const data = response?.data;
       if (!data) {
         throw new NotFoundException('Perfil no encontrado');
       }
 
       console.log(data);
-      
+
       return {
         phone: data?.id,
         nombre: data?.name,
         imagen: data?.profile_picture,
-        is_business: data?.is_business
+        is_business: data?.is_business,
       };
     } catch (error) {
       throw new InternalServerErrorException('Error al obtener el perfil');

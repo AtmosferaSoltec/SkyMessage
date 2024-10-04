@@ -25,4 +25,19 @@ export class AuthService {
       throw error;
     }
   }
+
+  async validarToken() : Promise<boolean> {
+    try {
+      const response = await lastValueFrom(
+        this.http.post(`${this.baseUrl}/validar-token`, { token: localStorage.getItem('token') })
+      );
+      if (!response) {
+        return false;
+      }
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  }
 }

@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Usuario } from "../../usuario/entities/usuario.entity";
 
 @Entity({ name: "plantilla" })
 export class Plantilla {
@@ -9,8 +10,7 @@ export class Plantilla {
     @Column({
         type: "varchar",
         length: 50,
-        nullable: false,
-        unique: true
+        nullable: false
     })
     titulo: string;
 
@@ -38,5 +38,11 @@ export class Plantilla {
         onUpdate: "CURRENT_TIMESTAMP"
     })
     updated_at: Date;
+
+    @ManyToOne(
+        () => Usuario,
+        (u) => u.plantillas
+    )
+    usuario: Usuario;
 
 }

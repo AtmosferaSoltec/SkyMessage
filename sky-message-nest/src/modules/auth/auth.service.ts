@@ -29,7 +29,14 @@ export class AuthService {
     return {
       access_token: token,
       token_type: 'bearer',
-      expires_in: 30,
     };
+  }
+
+  validarToken(dto: { token: string }) {
+    try {
+      return this.jwtService.verify(dto.token);
+    } catch (error) {
+      throw new UnauthorizedException('Token inválido');
+    }
   }
 }

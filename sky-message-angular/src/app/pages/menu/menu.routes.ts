@@ -3,22 +3,27 @@ import { EnviarMensajesComponent } from "../enviar-mensajes/enviar-mensajes.comp
 import { HistorialComponent } from "../historial/historial.component";
 import { InstanciaComponent } from "../instancia/instancia.component";
 import { PanelAdminComponent } from "../panel-admin/panel-admin.component";
+import { authGuard } from "../../guards/auth.guard";
 
 export const menuRoutes: Routes = [
     {
       path: 'enviar-mensajes',
       component: EnviarMensajesComponent,
+      canActivate: [authGuard]
     },
     {
       path: 'historial',
       component: HistorialComponent,
+      canActivate: [authGuard]
     },
     {
       path: 'instancia',
       component: InstanciaComponent,
+      canActivate: [authGuard]
     },
     {
       path: 'panel-admin',
-      component: PanelAdminComponent
+      component: PanelAdminComponent,
+      canActivate: [authGuard]
     }
   ];
