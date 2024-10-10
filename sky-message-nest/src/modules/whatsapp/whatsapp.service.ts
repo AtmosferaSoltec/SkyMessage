@@ -99,7 +99,6 @@ export class WhatsappService {
     }
   }
 
-  // Send Envios
   async sendEnvios(envios: Envio[]) {
     try {
       envios.forEach(async (envio) => {
