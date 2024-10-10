@@ -6,6 +6,7 @@
   <textarea
     class="w-full h-[240px] p-4 rounded-2xl bg-gray-200 text-left align-top focus:outline-none focus:ring-0 resize-none"
     [value]="service.mensaje()"
+    (change)="setMensaje($event)"
   ></textarea>
 
   <div class="flex items-center justify-between w-full">
@@ -43,6 +44,6 @@
       }
     </div>
 
-    <app-button icon="send" text="Enviar" />
+    <app-button (click)="service.send()" icon="send" text="Enviar" />
   </div>
 </div>

@@ -39,4 +39,10 @@ export class AuthService {
       throw new UnauthorizedException('Token inválido');
     }
   }
+
+  async isAdmin(id: number) {
+    const user = await this.userService.findOne(id);
+    return user.tipoUsuario.nombre === 'Admin'
+  }
+  
 }

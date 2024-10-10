@@ -13,18 +13,17 @@ import { EnviarMensajeService } from '../../enviar-mensaje.service';
 export class SubirExcelContactosComponent {
 
   service = inject(EnviarMensajeService);
-  archivo = signal<File | null>(null);
 
   onFileSelected(event: any) {
     const file: File = event.target.files[0];
     if (file) {
-      this.archivo.set(file);
+      this.service.archivo.set(file);
       this.leerExcel(file);
     }
   }
 
   removeFile() {
-    this.archivo.set(null);
+    this.service.archivo.set(null);
   }
 
   leerExcel(file: File) {

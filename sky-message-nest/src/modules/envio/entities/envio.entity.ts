@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Destinatario } from './destinatario.entity';
+import { TipoEnvio } from './tipo-envio.entity';
 
 @Entity({ name: 'envio' })
 export class Envio {
@@ -35,6 +36,9 @@ export class Envio {
   @ManyToOne(() => Usuario, (usr) => usr.envios)
   usuario: Usuario;
 
-  @OneToMany(() => Destinatario, (dest) => dest.envio, { eager: true })
+  @ManyToOne(() => TipoEnvio, (te) => te.envios)
+  tipoEnvio: TipoEnvio;
+
+  @OneToMany(() => Destinatario, (dest) => dest.envio)
   destinatarios: Destinatario[];
 }

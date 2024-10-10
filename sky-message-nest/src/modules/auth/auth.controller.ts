@@ -1,7 +1,16 @@
-import { Controller, Post, Body, HttpCode } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpCode,
+  UseGuards,
+  Req,
+  Get,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { TokenDto } from './dto/token.dto';
+import { AuthGuard } from 'src/guards/auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -17,5 +26,12 @@ export class AuthController {
   @HttpCode(200)
   validarToken(@Body() dto: TokenDto) {
     return this.authService.validarToken(dto);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('is-admin')
+  isAdmin(@Req() req: Request) {
+    const { id } = req['user'];
+    return this.authService.isAdmin(id);
   }
 }

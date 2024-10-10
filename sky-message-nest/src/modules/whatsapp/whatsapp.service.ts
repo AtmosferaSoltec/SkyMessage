@@ -6,12 +6,15 @@ import {
 } from '@nestjs/common';
 import { UsuarioService } from '../admin/usuario/usuario.service';
 import { lastValueFrom } from 'rxjs';
+import { Envio } from '../envio/entities/envio.entity';
+import { EnvioService } from '../envio/envio.service';
 
 @Injectable()
 export class WhatsappService {
   constructor(
     private readonly http: HttpService,
     private readonly usuarioService: UsuarioService,
+    private readonly envioService: EnvioService,
   ) {}
 
   async getQR(idUsuario: number) {
@@ -93,6 +96,41 @@ export class WhatsappService {
       };
     } catch (error) {
       throw new InternalServerErrorException('Error al obtener el perfil');
+    }
+  }
+
+  // Send Envios
+  async sendEnvios(envios: Envio[]) {
+    try {
+      envios.forEach(async (envio) => {
+        const { instance, token } = envio.usuario;
+        envio.destinatarios.forEach(async (destinatario) => {
+          if (destinatario.intentos >= 3) {
+            return;
+          }
+
+          const form = new URLSearchParams();
+          form.append('token', token);
+          form.append('to', destinatario.telf);
+          form.append('body', envio.mensaje);
+          const url = `https://api.ultramsg.com/${instance}/messages/chat`;
+          const callApi = await lastValueFrom(
+            this.http.post(url, form, {
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+              },
+            }),
+          );
+
+          if (callApi?.data?.message == 'ok') {
+            await this.envioService.updateDestinatarioEnviado(destinatario.id);
+          } else {
+            await this.envioService.updateIntento(destinatario.id);
+          }
+        });
+      });
+    } catch (error) {
+      //console.log('Api Error', error?.message);
     }
   }
 }

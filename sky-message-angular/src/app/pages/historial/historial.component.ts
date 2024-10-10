@@ -1,25 +1,25 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import Envio from '../../interfaces/envio';
 import { EnvioService } from '../../services/envio.service';
-import { CardHistorialComponent } from '../../components/card-historial/card-historial.component';
 import { CommonModule } from '@angular/common';
+import { ButtonComponent } from '../../components/button/button.component';
+import Historial from '../../interfaces/historial';
+import { NumEnvioPipe } from '../../pipes/num-envio.pipe';
 
 @Component({
   selector: 'app-historial',
   standalone: true,
-  imports: [CommonModule, CardHistorialComponent],
+  imports: [CommonModule, ButtonComponent, NumEnvioPipe],
   templateUrl: './historial.component.html',
 })
 export class HistorialComponent implements OnInit {
   envioService = inject(EnvioService);
-  listEnvios = signal<Envio[]>([]);
+  listHistorial = signal<Historial[]>([]);
 
   ngOnInit(): void {
-    this.envioService.getAll().subscribe({
+    this.envioService.getAllHistorial().subscribe({
       next: (data: any) => {
         console.log(data);
-        
-        this.listEnvios.set(data);
+        this.listHistorial.set(data);
       },
     });
   }

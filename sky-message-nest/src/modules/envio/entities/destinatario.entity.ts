@@ -19,6 +19,13 @@ export class Destinatario {
   })
   telf: string;
 
+  @Column({
+    type: 'int',
+    nullable: false,
+    default: 0,
+  })
+  intentos: number;
+
   @ManyToOne(() => Envio, (e) => e.destinatarios)
   envio: Envio;
 

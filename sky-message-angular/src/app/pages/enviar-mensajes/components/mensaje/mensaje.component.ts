@@ -28,4 +28,9 @@ export class MensajeComponent {
     (document.querySelector('input[type="file"]') as HTMLInputElement).value =
       '';
   }
+
+  setMensaje(event: any) {
+    this.service.mensaje.set(event?.target?.value || '');
+  }
+
 }

@@ -40,4 +40,8 @@ export class AuthService {
       return false;
     }
   }
+
+  isAdmin() {
+    return this.http.get(`${this.baseUrl}/is-admin`)
+  }
 }

@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsArray, ValidateNested, IsString, IsNotEmpty } from "class-validator";
+import { IsArray, ValidateNested, IsString, IsNotEmpty, IsNumber } from "class-validator";
 
 export class CreateEnvioDto {
     @IsArray()
@@ -10,6 +10,10 @@ export class CreateEnvioDto {
     @IsString()
     @IsNotEmpty()
     mensaje: string;
+
+    @IsNumber()
+    @IsNotEmpty()
+    tipoEnvio: number;
   }
   
   export class CreateDestinatarioDto {
